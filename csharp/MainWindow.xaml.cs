@@ -59,22 +59,48 @@ public partial class MainWindow : Window
         pct <= 15 ? Red : pct <= 35 ? Hex("#FFB300") : Hex("#4CAF50");
 
     // ---- 그리기 ----------------------------------------------------------
+    static readonly FontFamily IconFont = new("Segoe Fluent Icons, Segoe MDL2 Assets");
+
     void AddDevice(string name, int pct, string status, Brush statusColor, Brush barColor)
     {
-        var row = new StackPanel { Margin = new Thickness(0, 2, 0, 2) };
+        // 기기가 여러 개면 사이에 구분선
+        if (DeviceList.Children.Count > 0)
+            DeviceList.Children.Add(new Rectangle { Height = 1, Fill = Track, Margin = new Thickness(0, 10, 0, 10) });
 
-        var top = new DockPanel { LastChildFill = false };
-        var nameText = Text("🖱  " + name, 12, Sub);
-        nameText.Margin = new Thickness(0, 0, 12, 0);
+        var row = new StackPanel();
+
+        // 1행: [아이콘 이름] ........ [76%]
+        var top = new Grid();
+        top.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        top.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+        var left = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
+        left.Children.Add(new TextBlock
+        {
+            Text = "",                // Mouse 아이콘
+            FontFamily = IconFont,
+            FontSize = 14,
+            Foreground = Sub,
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin = new Thickness(0, 1, 8, 0),
+        });
+        var nameText = Text(name, 12.5, Sub);
         nameText.VerticalAlignment = VerticalAlignment.Center;
-        DockPanel.SetDock(nameText, Dock.Left);
-        var pctText = Text($"{pct}%", 21, barColor, bold: true);
-        DockPanel.SetDock(pctText, Dock.Right);
-        top.Children.Add(nameText);
+        nameText.TextTrimming = TextTrimming.CharacterEllipsis;
+        left.Children.Add(nameText);
+        top.Children.Add(left);
+
+        var pctText = new TextBlock { VerticalAlignment = VerticalAlignment.Center };
+        pctText.Inlines.Add(new System.Windows.Documents.Run(pct.ToString())
+            { FontSize = 24, FontWeight = FontWeights.Bold, Foreground = barColor });
+        pctText.Inlines.Add(new System.Windows.Documents.Run("%")
+            { FontSize = 15, FontWeight = FontWeights.SemiBold, Foreground = barColor });
+        Grid.SetColumn(pctText, 1);
         top.Children.Add(pctText);
         row.Children.Add(top);
 
-        var bar = new Grid { Height = 8, Margin = new Thickness(0, 4, 0, 2) };
+        // 2행: 막대
+        var bar = new Grid { Height = 8, Margin = new Thickness(0, 6, 0, 8) };
         bar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(Math.Max(pct, 1), GridUnitType.Star) });
         bar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(Math.Max(100 - pct, 0), GridUnitType.Star) });
         var track = new Rectangle { Fill = Track, RadiusX = 4, RadiusY = 4 };
@@ -83,7 +109,8 @@ public partial class MainWindow : Window
         bar.Children.Add(new Rectangle { Fill = barColor, RadiusX = 4, RadiusY = 4 });
         row.Children.Add(bar);
 
-        row.Children.Add(Text(status, 11, statusColor));
+        // 3행: 상태
+        row.Children.Add(Text(status, 11.5, statusColor));
         DeviceList.Children.Add(row);
     }
 
@@ -92,7 +119,6 @@ public partial class MainWindow : Window
         Text = s,
         FontSize = size,
         Foreground = color,
-        FontFamily = new FontFamily("Segoe UI"),
         FontWeight = bold ? FontWeights.Bold : FontWeights.Normal,
     };
 

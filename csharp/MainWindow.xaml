@@ -5,8 +5,13 @@
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         ResizeMode="NoResize" SizeToContent="WidthAndHeight"
         ShowInTaskbar="False" Topmost="True"
+        UseLayoutRounding="True" SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        FontFamily="Segoe UI, Malgun Gothic"
         MouseLeftButtonDown="OnDragStart" MouseLeftButtonUp="OnDragEnd">
-    <Border Background="#EE1E1F24" CornerRadius="10" Padding="14,10" MinWidth="240">
+    <Border Background="#F21E1F24" BorderBrush="#2CFFFFFF" BorderThickness="1"
+            CornerRadius="10" Padding="16,13,16,12" Width="260">
         <Border.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="새로고침" Click="OnRefresh"/>
