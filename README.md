@@ -55,7 +55,12 @@ pythonw mouse_battery_widget.pyw
 
 ### 윈도우 시작 시 자동 실행
 
-`Win + R` → `shell:startup` 입력 → 열린 폴더에 아래 내용의 바로가기를 만듭니다.
+C# 버전은 bat 파일을 더블클릭하면 됩니다.
+
+- `자동실행등록.bat`: 시작 프로그램에 위젯을 등록하고, 위젯이 꺼져 있으면 바로 실행합니다. exe는 bat과 같은 폴더에서 먼저 찾고, 없으면 `csharp\publish\`에서 찾습니다. Releases에서 받은 exe 옆에 bat을 두고 써도 됩니다.
+- `자동실행등록해제.bat`: 시작 프로그램에서 위젯을 뺍니다. 지금 떠 있는 위젯은 끄지 않습니다.
+
+직접 등록하려면 `Win + R` → `shell:startup` 입력 → 열린 폴더에 아래 내용의 바로가기를 만듭니다.
 
 - C# 버전 대상: `<경로>\LogitechBatteryWidget.exe`
 - Python 버전 대상: `pythonw.exe "<경로>\mouse_battery_widget.pyw"`
