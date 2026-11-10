@@ -21,13 +21,25 @@ public partial class MainWindow : Window
     bool _live;
     string? _lastRender;
 
+    // 위치 저장: 움직임이 멈추고 0.5초 뒤에 한 번 저장
+    readonly DispatcherTimer _saveTimer = new() { Interval = TimeSpan.FromMilliseconds(500) };
+
     public MainWindow()
     {
         InitializeComponent();
+        WindowStartupLocation = WindowStartupLocation.Manual;
         Left = _config.X;
         Top = _config.Y;
         Topmost = _config.Topmost;
         TopmostItem.IsChecked = _config.Topmost;
+
+        SourceInitialized += (_, _) => NativeWindow.HideFromAltTab(this);
+        Loaded += (_, _) => KeepOnScreen();
+
+        // 어떤 방법으로 옮겨지든(드래그 등) 위치가 바뀌면 저장
+        _saveTimer.Tick += (_, _) => { _saveTimer.Stop(); SavePosition(); };
+        LocationChanged += (_, _) => { _saveTimer.Stop(); _saveTimer.Start(); };
+        Closing += (_, _) => SavePosition();
 
         _client.Updated += devices => Dispatcher.Invoke(() =>
         {
@@ -179,13 +191,34 @@ public partial class MainWindow : Window
     }
 
     // ---- 조작 ------------------------------------------------------------
-    void OnDragStart(object sender, MouseButtonEventArgs e) => DragMove();
-
-    void OnDragEnd(object sender, MouseButtonEventArgs e)
+    void OnDragStart(object sender, MouseButtonEventArgs e)
     {
+        DragMove();          // 놓을 때까지 여기서 멈춰 있다가 돌아옴
+        SavePosition();
+    }
+
+    void OnDragEnd(object sender, MouseButtonEventArgs e) => SavePosition();
+
+    void SavePosition()
+    {
+        if (WindowState != WindowState.Normal || double.IsNaN(Left) || double.IsNaN(Top)) return;
+        if (_config.X == Left && _config.Y == Top) return;
         _config.X = Left;
         _config.Y = Top;
         _config.Save();
+    }
+
+    /// <summary>저장된 위치가 지금 연결된 모니터 밖이면(모니터 분리 등) 주 화면 안으로 옮긴다.</summary>
+    void KeepOnScreen()
+    {
+        double vl = SystemParameters.VirtualScreenLeft, vt = SystemParameters.VirtualScreenTop;
+        double vr = vl + SystemParameters.VirtualScreenWidth, vb = vt + SystemParameters.VirtualScreenHeight;
+        // 위젯 일부(40px 이상)가 화면 안에 보이면 그대로 둔다
+        if (Left + 40 <= vr && Left + ActualWidth - 40 >= vl && Top + 20 <= vb && Top + ActualHeight - 20 >= vt
+            && NativeWindow.IsOnAnyMonitor(this))
+            return;
+        Left = 40;
+        Top = 40;
     }
 
     void OnRefresh(object sender, RoutedEventArgs e)
