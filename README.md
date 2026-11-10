@@ -18,13 +18,35 @@
 
 G HUB 설정은 바꾸지 않습니다.
 
-## 요구 사항
+## 두 가지 버전
 
-- Windows 10/11
-- [Logitech G HUB](https://www.logitechg.com/innovation/g-hub.html) 설치 및 실행 중
-- Python 3.8 이상 (tkinter 포함)
+| | Python 버전 | C# 버전 |
+|---|---|---|
+| 위치 | `mouse_battery_widget.pyw` | `csharp/` |
+| 실행 | Python + `websockets` 설치 필요 | exe 하나로 실행, 따로 설치할 것 없음 |
+| 화면 | tkinter | WPF (둥근 모서리, 반투명) |
 
-## 설치 및 실행
+기능은 두 버전이 같습니다. 공통으로 Windows 10/11과 [Logitech G HUB](https://www.logitechg.com/innovation/g-hub.html)(설치 및 실행 중)가 필요합니다.
+
+## C# 버전
+
+### 실행 파일로 쓰기
+[Releases](../../releases)에서 `LogitechBatteryWidget.exe`를 받아 실행합니다. 런타임이 포함되어 있어서 .NET을 따로 설치하지 않아도 됩니다.
+
+### 직접 빌드
+[.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)가 필요합니다.
+
+```bash
+cd csharp
+dotnet run                                  # 바로 실행
+dotnet publish -c Release -o publish        # publish/LogitechBatteryWidget.exe 단일 파일 생성
+```
+
+설정(위치, 항상 위)은 `%APPDATA%\LogitechBatteryWidget\config.json`에 저장됩니다.
+
+## Python 버전
+
+Python 3.8 이상(tkinter 포함)이 필요합니다.
 
 ```bash
 pip install -r requirements.txt
@@ -35,7 +57,8 @@ pythonw mouse_battery_widget.pyw
 
 `Win + R` → `shell:startup` 입력 → 열린 폴더에 아래 내용의 바로가기를 만듭니다.
 
-- 대상: `pythonw.exe "<경로>\mouse_battery_widget.pyw"`
+- C# 버전 대상: `<경로>\LogitechBatteryWidget.exe`
+- Python 버전 대상: `pythonw.exe "<경로>\mouse_battery_widget.pyw"`
 
 ## 참고
 

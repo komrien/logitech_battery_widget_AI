@@ -3,3 +3,8 @@ widget_config.json
 
 __pycache__/
 *.pyc
+
+# C# 빌드 결과물 (exe는 GitHub Releases로 배포)
+csharp/bin/
+csharp/obj/
+csharp/publish/
