@@ -1,10 +1,13 @@
-# 개인 설정 (위젯 위치 등)
+# 媛쒖씤 ?ㅼ젙 (?꾩젽 ?꾩튂 ??
 widget_config.json
 
 __pycache__/
 *.pyc
 
-# C# 빌드 결과물 (exe는 GitHub Releases로 배포)
+# C# 鍮뚮뱶 寃곌낵臾?(exe??GitHub Releases濡?諛고룷)
 csharp/bin/
 csharp/obj/
 csharp/publish/
+
+# 배포용 zip
+release/
