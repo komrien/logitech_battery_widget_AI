@@ -1,0 +1,5 @@
+# 개인 설정 (위젯 위치 등)
+widget_config.json
+
+__pycache__/
+*.pyc
